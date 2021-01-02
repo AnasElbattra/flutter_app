@@ -22,7 +22,6 @@ class TransactionList extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
                       color: Colors.purple),
                 ),
                 padding: EdgeInsets.all(10),
@@ -36,7 +35,7 @@ class TransactionList extends StatelessWidget {
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    DateFormat('y/MMM/dd').format(t.date),
+                    DateFormat.yMMMd().format(t.date),
                     style: TextStyle(color: Colors.grey),
                   ),
                 ],
