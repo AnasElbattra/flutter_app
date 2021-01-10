@@ -1,10 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class NewTransaction extends StatelessWidget {
-  final Function  addTx;
+class NewTransaction extends StatefulWidget {
+  final Function addTx;
+
+  NewTransaction(this.addTx);
+
+  @override
+  _NewTransactionState createState() => _NewTransactionState();
+}
+
+class _NewTransactionState extends State<NewTransaction> {
   final title = TextEditingController();
   final amount = TextEditingController();
-         NewTransaction( this.addTx);
+  DateTime _selectedDate;
+
+  void submitDate() {
+    if (amount.text.isEmpty) return;
+    final enterAmount = double.parse(amount.text);
+    final enterTitle = title.text;
+    if (enterTitle.isEmpty || enterAmount <= 0 || _selectedDate == null) return;
+
+    widget.addTx(
+      enterTitle,
+      enterAmount,
+      _selectedDate,
+    );
+    Navigator.of(context).pop();
+  }
+
+  void _presentDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1998),
+      lastDate: DateTime.now(),
+    ).then((pickDate) {
+      if (pickDate == null) return;
+      setState(() {
+        _selectedDate = pickDate;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -21,22 +59,45 @@ class NewTransaction extends StatelessWidget {
 //
 //                    },
               controller: title,
+              onSubmitted: (_) => submitDate,
             ),
             TextField(
-              decoration: InputDecoration(labelText: 'Amount'),
+              decoration: InputDecoration(
+                labelText: 'Amount',
+              ),
 //                    onChanged: (val) {
 //                      amount=val;
 //                    },
               controller: amount,
+              keyboardType: TextInputType.number,
+              onSubmitted: (_) => submitDate(),
             ),
-            FlatButton(
-              onPressed: () {
-                addTx(title.text,double.parse(amount.text));
-              },
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _selectedDate == null
+                        ? 'No Date Chosen!'
+                        : DateFormat('d/M/y').format(_selectedDate),
+                  ),
+                ),
+                FlatButton(
+                  textColor: Theme.of(context).primaryColor,
+                  onPressed: _presentDatePicker,
+                  child: Text(
+                    'choose date',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                )
+              ],
+            ),
+            RaisedButton(
+              onPressed: submitDate,
               child: Text(
                 'Add Transaction',
               ),
-              textColor: Colors.purple,
+              color: Theme.of(context).primaryColor,
+              textColor: Theme.of(context).textTheme.button.color,
             )
           ],
         ),
