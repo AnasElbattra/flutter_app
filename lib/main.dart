@@ -13,8 +13,7 @@ void main() {
   //   DeviceOrientation.portraitDown,
   //   DeviceOrientation.portraitUp,
   // ]);
-  runApp(MyApp());
-}
+  runApp(MyApp());}
 
 class MyApp extends StatelessWidget {
   @override
